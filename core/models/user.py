@@ -16,7 +16,7 @@ class User(Base):
     name: Mapped[Optional[str]] = mapped_column(String(34))
     fullname: Mapped[Optional[str]]
     email: Mapped[str] = mapped_column(String,nullable=False, unique=True)
-    posts: Mapped[list['Post']] = relationship(back_populates="users")
+    posts: Mapped[list['Post']] = relationship(back_populates="user")
 
 
     def __repr__(self) -> str:
@@ -24,4 +24,4 @@ class User(Base):
 
 
     def __str__(self) -> str:
-        return f'Nickname: {self.nickname!r},Username: {self.name!r}, fullname: {self.fullname!r}'
+        return f'Nickname: {self.nickname!r}, Email: {self.email!r}'

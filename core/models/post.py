@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 class Post(Base):
     __tablename__ = "posts"
 
-    title: Mapped[str] = mapped_column(String(100), unique=False, nullable=False)
+    title: Mapped[str] = mapped_column(String(100), unique=False)
     body: Mapped[str] = mapped_column(
         Text,
         default="",
