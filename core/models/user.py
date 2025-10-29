@@ -24,4 +24,4 @@ class User(Base):
 
 
     def __str__(self) -> str:
-        return f'Nickname: {self.nickname!r}, Email: {self.email!r}'
+        return f'User (id: {self.id}, Nickname: {self.nickname!r}, Email: {self.email!r})'
