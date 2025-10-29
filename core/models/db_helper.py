@@ -16,4 +16,4 @@ class DatabaseHelper:
             autoflush=False,
             expire_on_commit=False,
         )
-db_helper = DatabaseHelper(url=settings.db_url, echo=settings.db_echo)
+db_helper = DatabaseHelper(url=settings.db.url, echo=settings.db.echo)
