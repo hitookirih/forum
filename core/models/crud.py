@@ -1,5 +1,6 @@
 import asyncio
-
+from sqlalchemy import select
+from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import EmailStr
 from core.models import db_helper, User, Post
@@ -8,9 +9,9 @@ from core.models import db_helper, User, Post
 async def create_user(
         session: AsyncSession,
         nickname: str,
-        name: str,
-        fullname: str,
         email: EmailStr,
+        name: str | None = None,
+        fullname: str | None = None,
 ) -> User:
     user = User(
         nickname=nickname,
@@ -24,11 +25,21 @@ async def create_user(
     return user
 
 
+async def get_user_by_nickname(session: AsyncSession, nickname: str) -> User | None:
+    stmt = select(User).where(User.nickname == nickname)
+    result: Result = await session.execute(stmt)
+    user: User | None = result.scalar_one_or_none()
+    print("found user", nickname,user)
+    return user
+
+
 async def main():
     async with db_helper.session_factory() as session:
-        await create_user(session=session, nickname="horse",name="jack",fullname="bo",email='test@example.com')
-        # await create_user(session=session, nickname="anna", email='testtwo@gmail.com')
-
+        # await create_user(session=session, nickname="horse",name="jack",fullname="bo",email='test@example.com')
+        # await create_user(session=session, nickname="furry", email='test3@gmail.com')
+        # await get_user_by_nickname(session=session, nickname="horse")
+        # await get_user_by_nickname(session=session, nickname="anna")
+        # await get_user_by_nickname(session=session, nickname="pork")
 
 if __name__ == "__main__":
     asyncio.run(main())
