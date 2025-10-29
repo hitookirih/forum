@@ -23,3 +23,8 @@ class Post(Base):
     )
     user: Mapped["User"] = relationship(back_populates="posts")
 
+    def __str__(self) -> str:
+        return f'{self.__class__.__name__}(id={self.id}, title: {self.title!r}, user_id: {self.user_id!r})'
+
+    def __repr__(self) -> str:
+        return str(self)
