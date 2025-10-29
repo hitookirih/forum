@@ -25,6 +25,21 @@ async def create_user(
     return user
 
 
+async def create_posts(
+        session: AsyncSession,
+        user_id: int,
+        *posts_title: str,
+)-> list[Post]:
+    posts = [
+        Post(title=title, user_id=user_id)
+        for title in posts_title
+    ]
+    session.add_all(posts)
+    await session.commit()
+    print(posts)
+    return posts
+
+
 async def get_user_by_nickname(session: AsyncSession, nickname: str) -> User | None:
     stmt = select(User).where(User.nickname == nickname)
     result: Result = await session.execute(stmt)
@@ -37,9 +52,21 @@ async def main():
     async with db_helper.session_factory() as session:
         # await create_user(session=session, nickname="horse",name="jack",fullname="bo",email='test@example.com')
         # await create_user(session=session, nickname="furry", email='test3@gmail.com')
-        # await get_user_by_nickname(session=session, nickname="horse")
-        # await get_user_by_nickname(session=session, nickname="anna")
+        user_horse = await get_user_by_nickname(session=session, nickname="horse")
+        user_anna = await get_user_by_nickname(session=session, nickname="anna")
         # await get_user_by_nickname(session=session, nickname="pork")
+        # await create_posts(
+        #     session,
+        #     user_horse.id,
+        #     "About weather",
+        #     "Today is cold",
+        # )
+        # await create_posts(
+        #     session,
+        #     user_anna.id,
+        #     "About music",
+        # )
+
 
 if __name__ == "__main__":
     asyncio.run(main())
