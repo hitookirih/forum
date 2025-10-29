@@ -3,6 +3,8 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import EmailStr
+from sqlalchemy.orm import joinedload, selectinload
+
 from core.models import db_helper, User, Post
 
 
@@ -48,12 +50,26 @@ async def get_user_by_nickname(session: AsyncSession, nickname: str) -> User | N
     return user
 
 
+async def get_user_with_posts(
+        session: AsyncSession,
+):
+    stmt = select(User).options(selectinload(User.posts)).order_by(User.id)
+    result: Result = await session.execute(stmt)
+    users = result.scalars()
+
+    for user in users:
+        print("^^" * 10)
+        print(user)
+        for post in user.posts:
+            print("-", post)
+
+
 async def main():
     async with db_helper.session_factory() as session:
         # await create_user(session=session, nickname="horse",name="jack",fullname="bo",email='test@example.com')
         # await create_user(session=session, nickname="furry", email='test3@gmail.com')
-        user_horse = await get_user_by_nickname(session=session, nickname="horse")
-        user_anna = await get_user_by_nickname(session=session, nickname="anna")
+        # user_horse = await get_user_by_nickname(session=session, nickname="horse")
+        # user_anna = await get_user_by_nickname(session=session, nickname="anna")
         # await get_user_by_nickname(session=session, nickname="pork")
         # await create_posts(
         #     session,
@@ -66,6 +82,7 @@ async def main():
         #     user_anna.id,
         #     "About music",
         # )
+        await get_user_with_posts(session=session)
 
 
 if __name__ == "__main__":
