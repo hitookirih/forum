@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 from typing import Optional, List
+
+from pydantic import EmailStr
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 from core.models.base import Base
@@ -17,6 +19,7 @@ class User(Base):
     fullname: Mapped[Optional[str]]
     email: Mapped[str] = mapped_column(String,nullable=False, unique=True)
     posts: Mapped[list['Post']] = relationship(back_populates="user")
+    password: Mapped[str] = mapped_column(String(128), nullable=False)
 
 
     def __repr__(self) -> str:
@@ -24,4 +27,4 @@ class User(Base):
 
 
     def __str__(self) -> str:
-        return f'User (id: {self.id}, Nickname: {self.nickname!r}, Email: {self.email!r})'
+        return f'User (id: {self.id}, Nickname: {self.nickname!r}, Email: {self.email!r}, Password: {self.password!r})'
