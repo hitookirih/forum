@@ -4,14 +4,17 @@ from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import EmailStr
 from sqlalchemy.orm import joinedload, selectinload
+from auth import utils as auth_utils
 
 from core.models import db_helper, User, Post
+from core.models.user_schemas import UserUpdateSchema
 
 
 async def create_user(
         session: AsyncSession,
         nickname: str,
         email: EmailStr,
+        password: str,
         name: str | None = None,
         fullname: str | None = None,
 ) -> User:
@@ -20,6 +23,7 @@ async def create_user(
         name=name,
         fullname=fullname,
         email=email,
+        password=password,
     )
     session.add(user)
     await session.commit()
@@ -40,6 +44,24 @@ async def create_posts(
     await session.commit()
     print(posts)
     return posts
+
+
+async def update_user_partial(
+        session: AsyncSession,
+        user: User,
+        user_update: UserUpdateSchema,
+)-> User:
+    # data = user_update.model_dump(exclude_unset=True)
+    #
+    # if "password" in data:
+    #     data["password"] = auth_utils.hash_password(data["password"])
+
+    for column, value in user_update.model_dump(exclude_unset=True).items():
+        setattr(user, column, value)
+    await session.commit()
+    await session.refresh(user)
+    print(user)
+    return user
 
 
 async def get_user_by_nickname(session: AsyncSession, nickname: str) -> User | None:
@@ -67,8 +89,8 @@ async def get_user_with_posts(
 async def main():
     async with db_helper.session_factory() as session:
         # await create_user(session=session, nickname="horse",name="jack",fullname="bo",email='test@example.com')
-        # await create_user(session=session, nickname="furry", email='test3@gmail.com')
-        # user_horse = await get_user_by_nickname(session=session, nickname="horse")
+        # await create_user(session=session, nickname="John", email="johnnn@mail.com", password=auth_utils.hash_password("password"))
+        # await get_user_by_nickname(session=session, nickname="john", )
         # user_anna = await get_user_by_nickname(session=session, nickname="anna")
         # await get_user_by_nickname(session=session, nickname="pork")
         # await create_posts(
@@ -82,6 +104,7 @@ async def main():
         #     user_anna.id,
         #     "About music",
         # )
+        # await update_user_partial(session=session, user=user_anna, user_update=UserUpdateSchema(name='David', fullname="jones"))
         await get_user_with_posts(session=session)
 
 
