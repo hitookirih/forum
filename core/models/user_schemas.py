@@ -5,13 +5,11 @@ class UserBaseSchema(BaseModel):
     id: int
 
 
-# class UserSchema(BaseModel):
-#     model_config = ConfigDict
-#
-#     nickname: str
-#     email: EmailStr
-#     password: bytes
-#     active: bool = True
+class UserSchema(BaseModel):
+    nickname: str
+    email: EmailStr
+    password: bytes
+    active: bool = True
 
 
 class UserUpdateSchema(BaseModel):

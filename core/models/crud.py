@@ -68,7 +68,7 @@ async def get_user_by_nickname(session: AsyncSession, nickname: str) -> User | N
     stmt = select(User).where(User.nickname == nickname)
     result: Result = await session.execute(stmt)
     user: User | None = result.scalar_one_or_none()
-    print("found user", nickname,user)
+    # print("found user", nickname,user)
     return user
 
 
@@ -105,6 +105,7 @@ async def main():
         #     "About music",
         # )
         # await update_user_partial(session=session, user=user_anna, user_update=UserUpdateSchema(name='David', fullname="jones"))
+        await create_user(session=session, nickname="admin", email="adm@example.com", password=auth_utils.hash_password("123456"),name="admin", fullname="admin")
         await get_user_with_posts(session=session)
 
 
