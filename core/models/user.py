@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from typing import Optional, List
 
 from pydantic import EmailStr
-from sqlalchemy import String
+from sqlalchemy import String, Boolean
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 from core.models.base import Base
 
@@ -20,6 +20,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String,nullable=False, unique=True)
     posts: Mapped[list['Post']] = relationship(back_populates="user")
     password: Mapped[str] = mapped_column(String(128), nullable=False)
+    active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default='False')
 
 
     def __repr__(self) -> str:
