@@ -2,13 +2,12 @@
 from jwt.exceptions import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import User
 from fastapi import APIRouter, Depends, Form, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordBearer
-from auth import utils as auth_utils
+from fastapi.security import OAuth2PasswordBearer
+from api_v1.auth import utils as auth_utils
 from core.models.db_helper import db_helper
 from core.models.user_schemas import UserSchema
-from core.models.crud import create_user, get_user_by_nickname
+from core.models.crud import get_user_by_nickname
 from pydantic import BaseModel
 
 
